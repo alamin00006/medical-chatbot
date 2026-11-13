@@ -83,7 +83,8 @@ export const useChat = () => {
       try {
         const { data } = await axios.post<ChatResponse>(
           `${API_URL}/api/chat`,
-          { message: content },
+          // The backend keeps LangChain memory per conversation_id, so follow-ups have context.
+          { message: content, conversation_id: conversationId },
           { signal: controller.signal, timeout: REQUEST_TIMEOUT_MS },
         );
         const answer = cleanAnswer(data.answer) || "I couldn't find an answer to that in my knowledge base.";
@@ -149,6 +150,8 @@ export const useChat = () => {
   const deleteConversation = useCallback(
     (id: string) => {
       if (pendingId === id) abortRef.current?.abort();
+      // Also forget the server-side memory; failure here shouldn't block the UI.
+      axios.delete(`${API_URL}/api/chat/${encodeURIComponent(id)}`).catch(() => undefined);
       setConversations((current) => current.filter((conversation) => conversation.id !== id));
       setError((current) => (current?.conversationId === id ? null : current));
       setActiveId((current) => (current === id ? null : current));

@@ -13,7 +13,7 @@ export const useApiStatus = (): ApiStatus => {
 
     const check = async () => {
       try {
-        await axios.get(`${API_URL}/health`, { timeout: 5_000 });
+        await axios.get(`${API_URL}/api/health`, { timeout: 5_000 });
         if (!cancelled) setStatus("online");
       } catch {
         if (!cancelled) setStatus("offline");

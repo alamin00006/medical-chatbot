@@ -1,4 +1,8 @@
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080").replace(/\/$/, "");
+/**
+ * Empty (default) = same-origin: requests go to /api/* and the Next.js proxy route
+ * forwards them to BACKEND_URL. Set NEXT_PUBLIC_API_URL only to call the API directly.
+ */
+export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "").replace(/\/$/, "");
 
 /** Must match ChatRequest.message max_length in the FastAPI backend. */
 export const MAX_MESSAGE_LENGTH = 4000;

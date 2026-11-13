@@ -5,3 +5,7 @@ __pycache__/
 frontend/node_modules/
 frontend/.next/
 frontend/.env.local
+
+# LangChain conversation memory (per-chat JSON files)
+chat_history/
+messages.json

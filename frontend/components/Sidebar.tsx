@@ -119,7 +119,7 @@ export const Sidebar = ({
         <span className="sidebar-footer-icon"><ShieldIcon width={16} height={16} /></span>
         <div>
           <strong>Private by design</strong>
-          <p>Conversations are stored only in this browser. Avoid sharing personal identifiers.</p>
+          <p>Chat memory is kept so follow-ups have context. Deleting a chat erases it. Avoid sharing personal identifiers.</p>
         </div>
       </div>
     </aside>

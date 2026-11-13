@@ -1,0 +1,33 @@
+name: medical-chatbot
+
+# Runs the images published to Docker Hub by the GitHub Actions workflow.
+#   DOCKERHUB_USERNAME=<you> IMAGE_TAG=latest docker compose pull
+#   DOCKERHUB_USERNAME=<you> IMAGE_TAG=latest docker compose up -d
+# Backend secrets are read from ./.env (PINECONE_API_KEY, GROQ_API_KEY, ...).
+
+services:
+  backend:
+    image: ${DOCKERHUB_USERNAME:?set DOCKERHUB_USERNAME}/medical-chatbot-backend:${IMAGE_TAG:-latest}
+    container_name: medical-chatbot-backend
+    restart: unless-stopped
+    env_file: .env
+    expose:
+      - "8080"
+    volumes:
+      - chat_history:/app/chat_history
+
+  frontend:
+    image: ${DOCKERHUB_USERNAME:?set DOCKERHUB_USERNAME}/medical-chatbot-frontend:${IMAGE_TAG:-latest}
+    container_name: medical-chatbot-frontend
+    restart: unless-stopped
+    environment:
+      BACKEND_URL: http://backend:8080
+    ports:
+      - "${APP_PORT:-80}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  # LangChain conversation memory survives container upgrades.
+  chat_history:
