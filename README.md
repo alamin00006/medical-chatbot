@@ -1,133 +1,60 @@
-# Medical-Chatbot-Project
+# Medical Chatbot
 
+A retrieval-augmented medical question answering app with a FastAPI backend and a separate Next.js frontend.
 
+## Requirements
 
-# How to run?
-### STEPS:
+- Python 3.12 (recommended; the pinned Pinecone integration does not support Python 3.14)
+- Node.js 20.9+
+- Pinecone and Groq API keys
 
-Clone the repository
+## Backend
 
-```bash
-Project repo: https://github.com/
-```
-### STEP 01- Create a conda environment after opening the repository
-
-```bash
-conda create -n medicalbot python=3.10 -y
-```
+Activate the `medicalbot` conda environment and install dependencies:
 
 ```bash
+# First time only, if the environment doesn't exist yet:
+# conda create -n medicalbot python=3.12 -y
+
 conda activate medicalbot
+pip install -r requirements.txt   # only needed if packages are missing
 ```
 
-
-### STEP 02- install the requirements
-```bash
-pip install -r requirements.txt
-```
-
-
-### Create a `.env` file in the root directory and add your Pinecone & openai credentials as follows:
+Create a root `.env` file:
 
 ```ini
-PINECONE_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-OPENAI_API_KEY = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+PINECONE_API_KEY=your-pinecone-api-key
+GROQ_API_KEY=your-groq-api-key
+PINECONE_INDEX_NAME=medical-chatbot
+GROQ_MODEL=qwen/qwen3.8-27b
+FRONTEND_ORIGINS=http://localhost:3000
 ```
 
+Start the API from the repository root (with `medicalbot` active):
 
 ```bash
-# run the following command to store embeddings to pinecone
-python store_index.py
-```
-
-```bash
-# Finally run the following command
 python app.py
+# or, with auto-reload during development:
+uvicorn app:app --reload --host 0.0.0.0 --port 8080
 ```
 
-Now,
+The API root at <http://localhost:8080/> returns its status and links. API docs are at <http://localhost:8080/docs>, and the health check is at <http://localhost:8080/health>.
+
+## Frontend
+
+In another terminal:
+
 ```bash
-open up localhost:
+cd frontend
+npm install
 ```
 
+Copy `frontend/.env.example` to `frontend/.env.local` (or configure `NEXT_PUBLIC_API_URL`) and start Next.js:
 
-### Techstack Used:
+```bash
+npm run dev
+```
 
-- Python
-- LangChain
-- Flask
-- GPT
-- Pinecone
+Open <http://localhost:3000>. By default, the frontend calls `http://localhost:8080/api/chat`. The API allows local Next.js development origins on `localhost` and `127.0.0.1`, including a different port if Next.js selects one automatically.
 
-
-
-# AWS-CICD-Deployment-with-Github-Actions
-
-## 1. Login to AWS console.
-
-## 2. Create IAM user for deployment
-
-	#with specific access
-
-	1. EC2 access : It is virtual machine
-
-	2. ECR: Elastic Container registry to save your docker image in aws
-
-
-	#Description: About the deployment
-
-	1. Build docker image of the source code
-
-	2. Push your docker image to ECR
-
-	3. Launch Your EC2 
-
-	4. Pull Your image from ECR in EC2
-
-	5. Lauch your docker image in EC2
-
-	#Policy:
-
-	1. AmazonEC2ContainerRegistryFullAccess
-
-	2. AmazonEC2FullAccess
-
-	
-## 3. Create ECR repo to store/save docker image
-    - Save the URI: 315865595366.dkr.ecr.us-east-1.amazonaws.com/medibot
-
-	
-## 4. Create EC2 machine (Ubuntu) 
-
-## 5. Open EC2 and Install docker in EC2 Machine:
-	
-	
-	#optinal
-
-	sudo apt-get update -y
-
-	sudo apt-get upgrade
-	
-	#required
-
-	curl -fsSL https://get.docker.com -o get-docker.sh
-
-	sudo sh get-docker.sh
-
-	sudo usermod -aG docker ubuntu
-
-	newgrp docker
-	
-# 6. Configure EC2 as self-hosted runner:
-    setting>actions>runner>new self hosted runner> choose os> then run command one by one
-
-
-# 7. Setup github secrets:
-
-   - AWS_ACCESS_KEY_ID
-   - AWS_SECRET_ACCESS_KEY
-   - AWS_DEFAULT_REGION
-   - ECR_REPO
-   - PINECONE_API_KEY
-   - OPENAI_API_KEY
-
+To populate the Pinecone index, configure the same `.env` keys and run `python store_index.py` from the repository root.
