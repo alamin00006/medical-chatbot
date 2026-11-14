@@ -1,4 +1,3 @@
-.env
 .venv/
 __pycache__/
 *.py[cod]
@@ -9,3 +8,5 @@ frontend/.env.local
 # LangChain conversation memory (per-chat JSON files)
 chat_history/
 messages.json
+config.bat
+node_modules
