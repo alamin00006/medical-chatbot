@@ -7,7 +7,7 @@ import type { NextRequest } from "next/server";
  */
 export const dynamic = "force-dynamic";
 
-const BACKEND_URL = (process.env.BACKEND_URL ?? "http://localhost:8080").replace(/\/$/, "");
+const BACKEND_URL = (process.env.BACKEND_URL ?? "https://apichatbot.krishokai.xyz").replace(/\/$/, "");
 
 type RouteContext = { params: Promise<{ path: string[] }> };
 
