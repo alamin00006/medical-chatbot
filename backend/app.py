@@ -114,7 +114,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Medical Chatbot API", version="1.0.0", lifespan=lifespan)
 allowed_origins = [
     origin.strip()
-    for origin in os.getenv("FRONTEND_ORIGINS", "http://localhost:3000").split(",")
+    for origin in os.getenv("FRONTEND_ORIGINS", "https://medichatbot.krishokai.xyz").split(",")
     if origin.strip()
 ]
 app.add_middleware(
@@ -132,7 +132,7 @@ async def root() -> dict[str, str]:
     return {
         "message": "Medical Chatbot API is running",
         "docs": "/docs",
-        "frontend": "http://localhost:3000",
+        "frontend": "https://medichatbot.krishokai.xyz",
     }
 
 
