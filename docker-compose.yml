@@ -3,14 +3,14 @@ name: medical-chatbot
 # Runs the images published to Docker Hub by the GitHub Actions workflow.
 #   DOCKERHUB_USERNAME=<you> IMAGE_TAG=latest docker compose pull
 #   DOCKERHUB_USERNAME=<you> IMAGE_TAG=latest docker compose up -d
-# Backend secrets are read from ./.env (PINECONE_API_KEY, GROQ_API_KEY, ...).
+# Backend secrets are read from ./backend/.env (PINECONE_API_KEY, GROQ_API_KEY, ...).
 
 services:
   backend:
     image: ${DOCKERHUB_USERNAME:?set DOCKERHUB_USERNAME}/medical-chatbot-backend:${IMAGE_TAG:-latest}
     container_name: medical-chatbot-backend
     restart: unless-stopped
-    env_file: .env
+    env_file: ./backend/.env
     expose:
       - "8080"
     volumes:

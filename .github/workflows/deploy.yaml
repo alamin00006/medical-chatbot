@@ -6,7 +6,7 @@ on:
     branches: [main]
     paths-ignore:
       - "README.md"
-      - "research/**"
+      - "backend/research/**"
   workflow_dispatch:
 
 concurrency:
@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile Python sources
-        run: python -m compileall -q app.py src
+        run: python -m compileall -q backend/app.py backend/src
 
       - uses: actions/setup-node@v4
         with:
@@ -57,7 +57,7 @@ jobs:
       matrix:
         include:
           - service: backend
-            context: .
+            context: ./backend
             image_var: BACKEND_IMAGE
           - service: frontend
             context: ./frontend
@@ -97,7 +97,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          sparse-checkout: docker-compose.yml
+          sparse-checkout: |
+            docker-compose.yml
+            backend/Dockerfile
           sparse-checkout-cone-mode: false
 
       - name: Log in to Docker Hub
@@ -119,7 +121,7 @@ jobs:
             echo "GROQ_API_KEY=${GROQ_API_KEY}"
             echo "PINECONE_INDEX_NAME=${PINECONE_INDEX_NAME}"
             echo "GROQ_MODEL=${GROQ_MODEL}"
-          } > .env
+          } > backend/.env
 
       - name: Pull images
         run: docker compose pull
@@ -138,5 +140,5 @@ jobs:
       - name: Clean up credentials
         if: always()
         run: |
-          rm -f .env
+          rm -f backend/.env
           docker logout || true
